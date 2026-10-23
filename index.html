@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tính khối lượng thể tích</title>
+<meta name="theme-color" content="#1f4d3a">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Tính khối">
+<style>
+:root{
+  --bg:#f3f1ec; --surface:#ffffff; --ink:#1b1f1d; --muted:#6a716d;
+  --line:#d9d6cd; --accent:#1f4d3a; --accent-ink:#ffffff; --result:#e8efe9;
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#141816; --surface:#1e2421; --ink:#eef1ee; --muted:#9aa39e;
+        --line:#333b37; --accent:#6fcf9b; --accent-ink:#0d1f16; --result:#1a2b22;}
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  min-height:100vh;
+  padding:max(16px,env(safe-area-inset-top)) 16px max(24px,env(safe-area-inset-bottom));
+}
+main{max-width:480px;margin:0 auto}
+header{display:flex;align-items:center;justify-content:space-between;margin:8px 0 18px}
+h1{font-size:1.25rem;margin:0;font-weight:650}
+.icon-btn{
+  width:42px;height:42px;padding:0;margin:0;display:grid;place-items:center;
+  background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:12px;cursor:pointer;
+}
+.icon-btn[aria-expanded="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.icon-btn svg{width:22px;height:22px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+.panel{margin-bottom:14px}
+.panel[hidden]{display:none}
+.set{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.set:last-of-type{border-bottom:0}
+.set .t{font-size:.95rem;font-weight:550}
+.set .t span{display:block;font-size:.78rem;font-weight:400;color:var(--muted);margin-top:2px}
+.set input[type=text]{width:100px;text-align:right;font-size:1rem;padding:9px 10px}
+.set input[type=checkbox]{width:24px;height:24px;accent-color:var(--accent)}
+.dims{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:6px}
+input,select,button{font:inherit}
+input,select{
+  width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;
+  background:var(--bg);color:var(--ink);
+}
+.row{display:flex;gap:10px;margin-top:12px}
+.row > *{flex:1}
+button{
+  width:100%;padding:14px;border:0;border-radius:12px;background:var(--accent);color:var(--accent-ink);
+  font-weight:600;font-size:1rem;cursor:pointer;margin-top:14px;
+}
+button:active{opacity:.9}
+.result{
+  margin-top:14px;padding:14px;border-radius:12px;background:var(--result);
+  display:none;font-size:1.05rem;line-height:1.5;
+}
+.result.show{display:block}
+.result b{font-size:1.15rem}
+.hint{font-size:.8rem;color:var(--muted);margin-top:8px}
+footer{margin-top:20px;text-align:center;font-size:.75rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1>Tính khối lượng thể tích</h1>
+  <button class="icon-btn" id="cfgBtn" aria-label="Cài đặt" aria-expanded="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+  </button>
+</header>
+
+<div class="panel" id="cfgPanel" hidden>
+  <div class="card">
+    <div class="set">
+      <div class="t">Đơn vị chiều dài<span>cm hoặc mm</span></div>
+      <select id="unitLen"><option value="cm">cm</option><option value="mm">mm</option></select>
+    </div>
+    <div class="set">
+      <div class="t">Đơn vị khối lượng<span>g hoặc kg</span></div>
+      <select id="unitMass"><option value="g">g</option><option value="kg">kg</option></select>
+    </div>
+    <div class="set">
+      <div class="t">Làm tròn<span>số chữ số thập phân</span></div>
+      <input type="text" id="round" value="2" inputmode="numeric">
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="dims">
+    <div>
+      <label for="l">Dài</label>
+      <input type="number" id="l" inputmode="decimal" placeholder="0">
+    </div>
+    <div>
+      <label for="w">Rộng</label>
+      <input type="number" id="w" inputmode="decimal" placeholder="0">
+    </div>
+    <div>
+      <label for="h">Cao</label>
+      <input type="number" id="h" inputmode="decimal" placeholder="0">
+    </div>
+  </div>
+  <div class="row">
+    <div>
+      <label for="rho">Tỷ trọng</label>
+      <input type="number" id="rho" inputmode="decimal" placeholder="1" value="1">
+    </div>
+    <div>
+      <label for="shape">Hình dạng</label>
+      <select id="shape">
+        <option value="box">Hộp chữ nhật</option>
+        <option value="cyl">Hình trụ</option>
+        <option value="sph">Hình cầu</option>
+      </select>
+    </div>
+  </div>
+  <button id="calc">Tính</button>
+  <div class="result" id="res"></div>
+  <p class="hint">Tỷ trọng mặc định = 1 (nước). Đơn vị theo cài đặt.</p>
+</div>
+
+<footer>PWA · Offline · Tính khối</footer>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const cfgBtn = $("cfgBtn"), cfgPanel = $("cfgPanel");
+cfgBtn.onclick = () => {
+  const open = cfgPanel.hidden;
+  cfgPanel.hidden = !open;
+  cfgBtn.setAttribute("aria-expanded", open);
+};
+
+function load(){
+  try{
+    const s = JSON.parse(localStorage.getItem("tk")||"{}");
+    if(s.unitLen) $("unitLen").value = s.unitLen;
+    if(s.unitMass) $("unitMass").value = s.unitMass;
+    if(s.round!=null) $("round").value = s.round;
+  }catch(e){}
+}
+function save(){
+  localStorage.setItem("tk", JSON.stringify({
+    unitLen: $("unitLen").value,
+    unitMass: $("unitMass").value,
+    round: $("round").value
+  }));
+}
+["unitLen","unitMass","round"].forEach(id => $(id).onchange = save);
+load();
+
+$("calc").onclick = () => {
+  const unitLen = $("unitLen").value;
+  const unitMass = $("unitMass").value;
+  const digits = Math.max(0, Math.min(6, parseInt($("round").value)||2));
+  let L = parseFloat($("l").value)||0;
+  let W = parseFloat($("w").value)||0;
+  let H = parseFloat($("h").value)||0;
+  let rho = parseFloat($("rho").value)||1;
+  const shape = $("shape").value;
+
+  // convert to cm
+  const toCm = unitLen === "mm" ? 0.1 : 1;
+  L *= toCm; W *= toCm; H *= toCm;
+
+  let vol = 0; // cm³
+  if(shape === "box") vol = L*W*H;
+  else if(shape === "cyl") vol = Math.PI * (L/2)**2 * H; // L = đường kính
+  else if(shape === "sph") vol = (4/3)*Math.PI*(L/2)**3; // L = đường kính
+
+  let mass = vol * rho; // g (nếu rho = g/cm³)
+  if(unitMass === "kg") mass /= 1000;
+
+  const fmt = n => Number(n.toFixed(digits));
+  const res = $("res");
+  res.classList.add("show");
+  res.innerHTML = `<b>Thể tích:</b> ${fmt(vol)} cm³<br><b>Khối lượng:</b> ${fmt(mass)} ${unitMass}`;
+};
+
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.register("./sw.js").catch(()=>{});
+}
+</script>
+</body>
+</html>

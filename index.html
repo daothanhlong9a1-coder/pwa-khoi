@@ -6,6 +6,8 @@
 <title>Tính khối lượng thể tích</title>
 <meta name="theme-color" content="#1f4d3a">
 <link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Tính khối">
@@ -46,149 +48,333 @@ h1{font-size:1.25rem;margin:0;font-weight:650}
 .set input[type=checkbox]{width:24px;height:24px;accent-color:var(--accent)}
 .dims{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:6px}
-input,select,button{font:inherit}
-input,select{
-  width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;
-  background:var(--bg);color:var(--ink);
+.field{position:relative}
+input[type=text]{
+  width:100%;font:inherit;font-size:1.15rem;color:var(--ink);
+  background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;
 }
-.row{display:flex;gap:10px;margin-top:12px}
-.row > *{flex:1}
-button{
-  width:100%;padding:14px;border:0;border-radius:12px;background:var(--accent);color:var(--accent-ink);
-  font-weight:600;font-size:1rem;cursor:pointer;margin-top:14px;
+.field input{padding-right:34px}
+input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.unit{position:absolute;right:10px;bottom:13px;font-size:.8rem;color:var(--muted);pointer-events:none}
+.qty{margin-top:12px}
+.result{margin-top:16px;background:var(--result);border-radius:14px;padding:18px 16px}
+.result .lbl{font-size:.85rem;color:var(--muted)}
+.result .val{font-size:2.8rem;font-weight:700;line-height:1.1;margin-top:4px;
+  font-variant-numeric:tabular-nums;word-break:break-all}
+.result .val small{font-size:1.1rem;font-weight:500;color:var(--muted);margin-left:4px}
+.detail{margin-top:8px;font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums;line-height:1.5}
+button.ghost,button.done{
+  font:inherit;border-radius:10px;padding:12px;cursor:pointer;width:100%;margin-top:12px;
 }
-button:active{opacity:.9}
-.result{
-  margin-top:14px;padding:14px;border-radius:12px;background:var(--result);
-  display:none;font-size:1.05rem;line-height:1.5;
-}
-.result.show{display:block}
-.result b{font-size:1.15rem}
-.hint{font-size:.8rem;color:var(--muted);margin-top:8px}
-footer{margin-top:20px;text-align:center;font-size:.75rem;color:var(--muted)}
+button.ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}
+button.done{background:var(--accent);color:var(--accent-ink);border:0;font-weight:600}
+button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.status{margin-top:18px;text-align:center;font-size:.8rem;color:var(--muted)}
+.btns{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:8px;margin-top:12px}
+.btns button{font:inherit;border-radius:10px;padding:12px 6px;cursor:pointer;margin:0;width:100%}
+.btns .pri{background:var(--accent);color:var(--accent-ink);border:0;font-weight:600}
+.hist{margin-top:22px}
+.hh{display:flex;align-items:center;justify-content:space-between}
+.hh h2{font-size:1rem;margin:0}
+.lnk{background:none;border:0;color:var(--muted);font:inherit;font-size:.85rem;cursor:pointer;padding:6px 0}
+.it{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:8px}
+.it img,.ph{width:56px;height:56px;border-radius:8px;flex:none}
+.it img{object-fit:cover;cursor:pointer}
+.ph{background:var(--result)}
+.it .m{flex:1;min-width:0;font-size:.82rem;color:var(--muted)}
+.it .m b{display:block;color:var(--ink);font-size:1.1rem;margin-bottom:2px}
+.x{background:none;border:0;color:var(--muted);font-size:1.4rem;cursor:pointer;padding:4px 10px}
+.empty{color:var(--muted);font-size:.85rem;padding:14px 0;text-align:center}
+.ov{position:fixed;inset:0;z-index:20;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ov[hidden]{display:none}
+.ov.blur{background:rgba(10,14,12,.55);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);gap:16px}
+.ov video{width:100%;flex:1;min-height:0;object-fit:cover}
+.ov .bar{display:flex;align-items:center;justify-content:space-around;width:100%;padding:16px 16px max(16px,env(safe-area-inset-bottom));background:rgba(0,0,0,.5);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.rb{font:inherit;color:#fff;background:rgba(255,255,255,.18);border:0;border-radius:999px;padding:10px 16px;cursor:pointer}
+.rb:disabled{opacity:.5}
+.shot{width:68px;height:68px;border-radius:50%;background:#fff;border:5px solid rgba(255,255,255,.5);cursor:pointer;padding:0}
+#big{max-width:94%;max-height:78%;border-radius:12px}
+.hud{position:absolute;top:max(12px,env(safe-area-inset-top));left:12px;right:12px;padding:8px 12px;border-radius:10px;background:rgba(0,0,0,.5);color:#fff;font-size:.9rem;text-align:center;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.cmsg{position:absolute;inset:0 0 100px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;color:#fff;text-align:center;background:#000}
+.cmsg[hidden]{display:none}
+.cmsg p{margin:0;line-height:1.55;max-width:340px;font-size:.95rem}
 </style>
 </head>
 <body>
 <main>
-<header>
-  <h1>Tính khối lượng thể tích</h1>
-  <button class="icon-btn" id="cfgBtn" aria-label="Cài đặt" aria-expanded="false">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-  </button>
-</header>
+  <header>
+    <h1>Tính khối lượng thể tích</h1>
+    <button class="icon-btn" id="gear" type="button" aria-label="Cài đặt" aria-expanded="false" aria-controls="panel">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
+  </header>
 
-<div class="panel" id="cfgPanel" hidden>
-  <div class="card">
+  <section class="card panel" id="panel" hidden>
     <div class="set">
-      <div class="t">Đơn vị chiều dài<span>cm hoặc mm</span></div>
-      <select id="unitLen"><option value="cm">cm</option><option value="mm">mm</option></select>
-    </div>
-    <div class="set">
-      <div class="t">Đơn vị khối lượng<span>g hoặc kg</span></div>
-      <select id="unitMass"><option value="g">g</option><option value="kg">kg</option></select>
+      <div class="t">Hệ số chia<span>Thể tích (cm³) ÷ hệ số</span></div>
+      <input id="sd" type="text" inputmode="decimal" autocomplete="off">
     </div>
     <div class="set">
-      <div class="t">Làm tròn<span>số chữ số thập phân</span></div>
-      <input type="text" id="round" value="2" inputmode="numeric">
+      <label class="t" for="sr" style="margin:0;color:inherit">Tự động làm tròn<span>Kết quả ra số nguyên</span></label>
+      <input id="sr" type="checkbox">
     </div>
-  </div>
-</div>
+    <div class="set">
+      <div class="t">Ngưỡng làm tròn lên<span>Phần lẻ ≥ ngưỡng thì lên, nhỏ hơn thì xuống</span></div>
+      <input id="st" type="text" inputmode="decimal" autocomplete="off">
+    </div>
+    <div class="set">
+      <div class="t">Số chữ số mỗi ô<span>Nhập đủ tự sang ô kế tiếp (0 = tắt)</span></div>
+      <input id="sn" type="text" inputmode="numeric" autocomplete="off">
+    </div>
+    <button class="done" id="close" type="button">Xong</button>
+  </section>
 
-<div class="card">
-  <div class="dims">
-    <div>
-      <label for="l">Dài</label>
-      <input type="number" id="l" inputmode="decimal" placeholder="0">
+  <section class="card">
+    <div class="dims">
+      <div class="field"><label for="l">Dài</label><input id="l" type="text" inputmode="decimal" autocomplete="off" placeholder="0"><span class="unit">cm</span></div>
+      <div class="field"><label for="w">Rộng</label><input id="w" type="text" inputmode="decimal" autocomplete="off" placeholder="0"><span class="unit">cm</span></div>
+      <div class="field"><label for="h">Cao</label><input id="h" type="text" inputmode="decimal" autocomplete="off" placeholder="0"><span class="unit">cm</span></div>
     </div>
-    <div>
-      <label for="w">Rộng</label>
-      <input type="number" id="w" inputmode="decimal" placeholder="0">
+    <div class="qty">
+      <label for="q">Số kiện</label>
+      <input id="q" type="text" inputmode="numeric" autocomplete="off" value="1">
     </div>
-    <div>
-      <label for="h">Cao</label>
-      <input type="number" id="h" inputmode="decimal" placeholder="0">
+    <div class="btns">
+      <button class="pri" id="cam" type="button">Chụp ảnh</button>
+      <button class="ghost" id="save" type="button">Lưu</button>
+      <button class="ghost" id="reset" type="button">Nhập mới</button>
     </div>
-  </div>
-  <div class="row">
-    <div>
-      <label for="rho">Tỷ trọng</label>
-      <input type="number" id="rho" inputmode="decimal" placeholder="1" value="1">
-    </div>
-    <div>
-      <label for="shape">Hình dạng</label>
-      <select id="shape">
-        <option value="box">Hộp chữ nhật</option>
-        <option value="cyl">Hình trụ</option>
-        <option value="sph">Hình cầu</option>
-      </select>
-    </div>
-  </div>
-  <button id="calc">Tính</button>
-  <div class="result" id="res"></div>
-  <p class="hint">Tỷ trọng mặc định = 1 (nước). Đơn vị theo cài đặt.</p>
-</div>
+  </section>
 
-<footer>PWA · Offline · Tính khối</footer>
+  <section class="result" aria-live="polite">
+    <div class="lbl">Khối lượng thể tích</div>
+    <div class="val"><span id="out">0</span><small>kg</small></div>
+    <div class="detail" id="detail"></div>
+  </section>
+
+  <section class="hist">
+    <div class="hh"><h2>Lịch sử</h2><button class="lnk" id="clr" type="button" hidden>Xoá hết</button></div>
+    <div id="list"></div>
+  </section>
+
+  <div class="status" id="status"></div>
 </main>
 
+<div class="ov" id="cv" hidden>
+  <video id="vid" playsinline muted autoplay></video>
+  <div class="hud" id="hud"></div>
+  <div class="cmsg" id="cmsg" hidden><p></p><button class="rb" id="retry" type="button">Thử lại</button></div>
+  <div class="bar">
+    <button class="rb" id="fl" type="button">Flash: tắt</button>
+    <button class="shot" id="shot" type="button" aria-label="Chụp"></button>
+    <button class="rb" id="cx" type="button">Đóng</button>
+  </div>
+</div>
+<div class="ov blur" id="vw" hidden>
+  <img id="big" alt="Ảnh kiện hàng">
+  <button class="rb" type="button">Đóng</button>
+</div>
+
 <script>
-const $ = id => document.getElementById(id);
-const cfgBtn = $("cfgBtn"), cfgPanel = $("cfgPanel");
-cfgBtn.onclick = () => {
-  const open = cfgPanel.hidden;
-  cfgPanel.hidden = !open;
-  cfgBtn.setAttribute("aria-expanded", open);
-};
+(function(){
+  var $ = function(id){return document.getElementById(id)};
+  var l=$('l'), w=$('w'), h=$('h'), q=$('q');
+  var dims=[l,w,h];
+  var sd=$('sd'), sr=$('sr'), st=$('st'), sn=$('sn');
+  var out=$('out'), detail=$('detail'), cur;
 
-function load(){
+  // ---- Cài đặt (lưu trên máy) ----
+  var S={divisor:6000, round:true, thr:0.35, digits:2};
   try{
-    const s = JSON.parse(localStorage.getItem("tk")||"{}");
-    if(s.unitLen) $("unitLen").value = s.unitLen;
-    if(s.unitMass) $("unitMass").value = s.unitMass;
-    if(s.round!=null) $("round").value = s.round;
+    var raw=localStorage.getItem('settings');
+    if(raw){ var o=JSON.parse(raw); for(var k in S){ if(o[k]!==undefined) S[k]=o[k]; } }
   }catch(e){}
-}
-function save(){
-  localStorage.setItem("tk", JSON.stringify({
-    unitLen: $("unitLen").value,
-    unitMass: $("unitMass").value,
-    round: $("round").value
-  }));
-}
-["unitLen","unitMass","round"].forEach(id => $(id).onchange = save);
-load();
+  function save(){ try{ localStorage.setItem('settings',JSON.stringify(S)); }catch(e){} }
 
-$("calc").onclick = () => {
-  const unitLen = $("unitLen").value;
-  const unitMass = $("unitMass").value;
-  const digits = Math.max(0, Math.min(6, parseInt($("round").value)||2));
-  let L = parseFloat($("l").value)||0;
-  let W = parseFloat($("w").value)||0;
-  let H = parseFloat($("h").value)||0;
-  let rho = parseFloat($("rho").value)||1;
-  const shape = $("shape").value;
+  function fmt(n,max){
+    return n.toLocaleString('vi-VN',{maximumFractionDigits:max===undefined?2:max,minimumFractionDigits:0});
+  }
+  function parse(v){
+    var n=parseFloat(String(v).replace(',','.'));
+    return isFinite(n)?n:NaN;
+  }
+  function num(el){ var n=parse(el.value); return n>0?n:0; }
 
-  // convert to cm
-  const toCm = unitLen === "mm" ? 0.1 : 1;
-  L *= toCm; W *= toCm; H *= toCm;
+  function fillSettings(){
+    sd.value=fmt(S.divisor,4); sr.checked=S.round; st.value=fmt(S.thr,4); sn.value=S.digits;
+  }
+  fillSettings();
 
-  let vol = 0; // cm³
-  if(shape === "box") vol = L*W*H;
-  else if(shape === "cyl") vol = Math.PI * (L/2)**2 * H; // L = đường kính
-  else if(shape === "sph") vol = (4/3)*Math.PI*(L/2)**3; // L = đường kính
+  sd.addEventListener('input',function(){ var n=parse(sd.value); if(n>0){S.divisor=n;save();calc();} });
+  st.addEventListener('input',function(){ var n=parse(st.value); if(n>=0&&n<=1){S.thr=n;save();calc();} });
+  sn.addEventListener('input',function(){ var n=parseInt(sn.value,10); if(n>=0&&n<=6){S.digits=n;save();} });
+  sr.addEventListener('change',function(){ S.round=sr.checked; save(); calc(); });
+  [sd,st,sn].forEach(function(el){ el.addEventListener('blur',fillSettings); });
 
-  let mass = vol * rho; // g (nếu rho = g/cm³)
-  if(unitMass === "kg") mass /= 1000;
+  // ---- Mở / đóng menu ----
+  var panel=$('panel'), gear=$('gear');
+  function toggle(open){
+    panel.hidden=!open; gear.setAttribute('aria-expanded',open?'true':'false');
+  }
+  gear.addEventListener('click',function(){ toggle(panel.hidden); });
+  $('close').addEventListener('click',function(){ toggle(false); });
 
-  const fmt = n => Number(n.toFixed(digits));
-  const res = $("res");
-  res.classList.add("show");
-  res.innerHTML = `<b>Thể tích:</b> ${fmt(vol)} cm³<br><b>Khối lượng:</b> ${fmt(mass)} ${unitMass}`;
-};
+  // ---- Tính toán ----
+  function calc(){
+    var L=num(l), W=num(w), H=num(h), Q=Math.max(1,Math.floor(num(q))||1);
+    var vol=L*W*H;
+    var total=vol/S.divisor*Q;
+    var shown, note='';
+    if(S.round){
+      var base=Math.floor(total+1e-9);
+      var frac=total-base;
+      shown=base+(frac>=S.thr-1e-9?1:0);
+      if(vol) note='  → làm tròn '+fmt(total,2)+' ≈ '+fmt(shown,0);
+    } else {
+      shown=Math.round(total*100)/100;
+    }
+    out.textContent=fmt(shown,2);
+    cur={L:L,W:W,H:H,Q:Q,kg:fmt(shown,2)};
+    detail.textContent = vol
+      ? fmt(L)+' × '+fmt(W)+' × '+fmt(H)+' = '+fmt(vol,0)+' cm³ ÷ '+fmt(S.divisor,4)
+        +(Q>1?' × '+Q+' kiện':'')+note
+      : '';
+  }
 
-if("serviceWorker" in navigator){
-  navigator.serviceWorker.register("./sw.js").catch(()=>{});
-}
+  // ---- Nhập liệu: tự sang ô kế khi đủ chữ số ----
+  function goto(el){ el.focus(); try{el.select();}catch(e){} }
+
+  dims.forEach(function(el,i){
+    el.addEventListener('focus',function(){ try{el.select();}catch(e){} });
+    el.addEventListener('input',function(e){
+      el.value=el.value.replace(/[^0-9.,]/g,'');
+      calc();
+      if(e.inputType && e.inputType.indexOf('delete')===0) return;
+      var s=el.value;
+      if(S.digits>0 && /^\d+$/.test(s) && s.length>=S.digits){
+        if(i<2) goto(dims[i+1]); else el.blur(); // nhập xong ô cuối: đóng bàn phím, kết quả hiện sẵn
+      }
+    });
+    el.addEventListener('keydown',function(e){
+      if(e.key==='Enter'){ e.preventDefault(); if(i<2) goto(dims[i+1]); else el.blur(); }
+    });
+  });
+  q.addEventListener('focus',function(){ try{q.select();}catch(e){} });
+  q.addEventListener('input',function(){ q.value=q.value.replace(/[^0-9]/g,''); calc(); });
+  q.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); q.blur(); } });
+
+  $('reset').addEventListener('click',function(){
+    l.value=w.value=h.value=''; q.value=1; calc(); goto(l);
+  });
+  calc();
+
+  // ---- Lịch sử: IndexedDB (dự phòng bộ nhớ tạm nếu không dùng được) ----
+  var mem=[], db=null;
+  function open(){ return new Promise(function(res){ try{
+    var r=indexedDB.open('khoi',1);
+    r.onupgradeneeded=function(){ r.result.createObjectStore('h',{keyPath:'id',autoIncrement:true}); };
+    r.onsuccess=function(){ db=r.result; res(); }; r.onerror=function(){ res(); };
+  }catch(e){ res(); } }); }
+  function st_(m){ return db.transaction('h',m).objectStore('h'); }
+  function all(){ return new Promise(function(res){ if(!db) return res(mem.slice());
+    var q=st_('readonly').getAll(); q.onsuccess=function(){res(q.result)}; q.onerror=function(){res([])}; }); }
+  function add(e){ return new Promise(function(res){ if(!db){ e.id=Date.now()+Math.random(); mem.push(e); return res(); }
+    var t=db.transaction('h','readwrite'); t.objectStore('h').add(e); t.oncomplete=res; t.onerror=res; }); }
+  function del(id){ return new Promise(function(res){ if(!db){ mem=mem.filter(function(x){return x.id!==id}); return res(); }
+    var t=db.transaction('h','readwrite'); t.objectStore('h').delete(id); t.oncomplete=res; t.onerror=res; }); }
+  function clr(){ return new Promise(function(res){ if(!db){ mem=[]; return res(); }
+    var t=db.transaction('h','readwrite'); t.objectStore('h').clear(); t.oncomplete=res; t.onerror=res; }); }
+
+  function toast(s){ var el=$('status'); el.textContent=s; setTimeout(function(){ if(el.textContent===s) el.textContent=''; },3000); }
+  function ready(){ return cur&&cur.L&&cur.W&&cur.H; }
+  function label(){ return fmt(cur.L)+' × '+fmt(cur.W)+' × '+fmt(cur.H)+' cm'+(cur.Q>1?' · '+cur.Q+' kiện':''); }
+  function show(src){ $('big').src=src; $('vw').hidden=false; }
+
+  function render(){ all().then(function(a){
+    a.sort(function(x,y){return y.t-x.t});
+    var box=$('list'); box.innerHTML='';
+    if(!a.length) box.innerHTML='<div class="empty">Chưa có kết quả nào được lưu</div>';
+    a.forEach(function(e){
+      var d=document.createElement('div'), th; d.className='it';
+      if(e.thumb){ th=document.createElement('img'); th.src=e.thumb; th.alt='Xem ảnh'; th.addEventListener('click',function(){show(e.img)}); }
+      else{ th=document.createElement('div'); th.className='ph'; }
+      var m=document.createElement('div'); m.className='m'; m.innerHTML='<b></b><span></span>';
+      m.firstChild.textContent=e.kg+' kg';
+      m.lastChild.textContent=e.dims+' · '+new Date(e.t).toLocaleString('vi-VN',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+      var x=document.createElement('button'); x.className='x'; x.type='button'; x.textContent='×'; x.setAttribute('aria-label','Xoá');
+      x.addEventListener('click',function(){ del(e.id).then(render); });
+      d.appendChild(th); d.appendChild(m); d.appendChild(x); box.appendChild(d);
+    });
+    $('clr').hidden=!a.length;
+  }); }
+
+  function entry(img,thumb){
+    if(!ready()){ toast('Nhập đủ dài, rộng, cao trước'); return; }
+    add({t:Date.now(),dims:label(),kg:cur.kg,img:img||null,thumb:thumb||null}).then(render);
+  }
+  $('save').addEventListener('click',function(){ entry(); });
+  $('clr').addEventListener('click',function(){ if(confirm('Xoá toàn bộ lịch sử?')) clr().then(render); });
+  $('vw').addEventListener('click',function(){ $('vw').hidden=true; });
+
+  // ---- Camera ----
+  var stream=null, track=null, torch=false;
+  function msg(t,retry){ var m=$('cmsg'); m.hidden=false; m.querySelector('p').textContent=t; $('retry').hidden=!retry; }
+  function hud(){ var h=$('hud'); h.style.background=''; h.textContent=ready()?label()+' · '+cur.kg+' kg':'Chưa nhập kích thước. Đóng camera, nhập dài, rộng, cao rồi chụp lại.'; }
+  function denied(e){
+    var n=e&&e.name;
+    if(n==='NotAllowedError'||n==='SecurityError') msg('Camera chưa được cho phép. Bấm Thử lại để trình duyệt hỏi quyền. Nếu không thấy hộp thoại: Android mở Chrome → ⋮ → Cài đặt → Cài đặt trang web → Camera; iPhone vào Cài đặt → Safari → Camera → chọn Hỏi hoặc Cho phép.',true);
+    else if(n==='NotFoundError') msg('Không tìm thấy camera trên thiết bị.',false);
+    else msg('Không mở được camera ('+(n||'lỗi')+').',true);
+  }
+  $('retry').addEventListener('click',function(){ $('cam').click(); });
+  function camClose(){ if(stream) stream.getTracks().forEach(function(t){t.stop()}); stream=track=null; torch=false; $('cv').hidden=true; }
+  $('cam').addEventListener('click',function(){
+    
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){ toast('Thiết bị không hỗ trợ camera'); return; }
+    $('cv').hidden=false; $('fl').disabled=true; $('fl').textContent='Flash'; hud(); msg('Đang xin quyền camera…',false);
+    navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1920}},audio:false}).then(function(s){
+      stream=s; track=s.getVideoTracks()[0];
+      var v=$('vid'); v.srcObject=s; $('cmsg').hidden=true; v.play();
+      var c=track.getCapabilities?track.getCapabilities():{}, fl=$('fl');
+      fl.disabled=!c.torch; fl.textContent=c.torch?'Flash: tắt':'Không có flash';
+    }).catch(denied);
+  });
+  $('fl').addEventListener('click',function(){
+    torch=!torch;
+    track.applyConstraints({advanced:[{torch:torch}]}).then(function(){ $('fl').textContent='Flash: '+(torch?'bật':'tắt'); })
+      .catch(function(){ torch=!torch; });
+  });
+  $('cx').addEventListener('click',camClose);
+  $('shot').addEventListener('click',function(){
+    var v=$('vid'), sw=v.videoWidth, sh=v.videoHeight; if(!sw) return;
+    if(!ready()){ hud(); $('hud').style.background='rgba(200,50,50,.85)'; return; }
+    var k=Math.min(1,1280/Math.max(sw,sh)), W=Math.round(sw*k), H=Math.round(sh*k);
+    var c=document.createElement('canvas'); c.width=W; c.height=H;
+    var g=c.getContext('2d'); g.drawImage(v,0,0,W,H);
+    // Dải nền mờ + chữ kết quả ở cuối ảnh
+    var fs=Math.round(Math.min(W,H)/14), pad=Math.round(fs*.6), bh=Math.round(fs*1.9+pad*2);
+    g.fillStyle='rgba(0,0,0,.5)'; g.fillRect(0,H-bh,W,bh);
+    g.fillStyle='#fff'; g.textBaseline='top';
+    g.font='500 '+Math.round(fs*.62)+'px system-ui,sans-serif'; g.fillText(label(),pad,H-bh+pad);
+    g.font='700 '+fs+'px system-ui,sans-serif'; g.fillText(cur.kg+' kg',pad,H-bh+pad+Math.round(fs*.85));
+    var img=c.toDataURL('image/jpeg',.82);
+    var t=document.createElement('canvas'), r=120/Math.max(W,H); t.width=Math.round(W*r); t.height=Math.round(H*r);
+    t.getContext('2d').drawImage(c,0,0,t.width,t.height);
+    camClose(); entry(img,t.toDataURL('image/jpeg',.7));
+  });
+
+  open().then(render);
+
+  // ---- Offline (service worker) ----
+  var stt=$('status');
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('sw.js').then(function(){
+      stt.textContent = navigator.onLine ? 'Sẵn sàng dùng offline' : 'Đang chạy offline';
+    }).catch(function(){ stt.textContent=''; });
+    window.addEventListener('online',function(){stt.textContent='Sẵn sàng dùng offline'});
+    window.addEventListener('offline',function(){stt.textContent='Đang chạy offline'});
+  }
+})();
 </script>
 </body>
 </html>

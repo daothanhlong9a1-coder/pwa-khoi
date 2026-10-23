@@ -1,11 +1,9 @@
 // Đổi số phiên bản khi cập nhật app để thiết bị tải bản mới
-const CACHE = 'tinh-khoi-v4';
+const CACHE = 'tinh-khoi-v5';
 const FILES = [
   './',
   './index.html',
-  './manifest.json',
-  './icons/icon-192.png',
-  './icons/icon-512.png'
+  './manifest.json'
 ];
 
 self.addEventListener('install', e => {
